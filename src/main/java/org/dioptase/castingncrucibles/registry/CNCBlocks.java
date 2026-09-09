@@ -22,6 +22,8 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.neoforged.neoforge.common.Tags;
 import org.dioptase.castingncrucibles.foundation.data.recipe.OreTier;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.simibubi.create.foundation.data.CreateRegistrate.casingConnectivity;
@@ -65,19 +67,18 @@ public class CNCBlocks {
 
     // ORES
 
-    public static final BlockEntry<Block>
+    public static final Map<OreTier, BlockEntry<Block>>
+            HEMATITE = registerOreFamily("hematite", CNCItems.HEMATITE_CHUNK),
+            MAGNETITE = registerOreFamily("magnetite", CNCItems.MAGNETITE_CHUNK),
+            CASSITERITE = registerOreFamily("cassiterite", CNCItems.CASSITERITE_CHUNK);
 
-            POOR_HEMATITE_ORE = registerTieredOre("hematite", OreTier.POOR, CNCItems.HEMATITE_CHUNK),
-            HEMATITE_ORE = registerTieredOre("hematite", OreTier.NORMAL, CNCItems.HEMATITE_CHUNK),
-            RICH_HEMATITE_ORE = registerTieredOre("hematite", OreTier.RICH, CNCItems.HEMATITE_CHUNK),
-
-            POOR_MAGNETITE_ORE = registerTieredOre("magnetite", OreTier.POOR, CNCItems.MAGNETITE_CHUNK),
-            MAGNETITE_ORE = registerTieredOre("magnetite", OreTier.NORMAL, CNCItems.MAGNETITE_CHUNK),
-            RICH_MAGNETITE_ORE = registerTieredOre("magnetite", OreTier.RICH, CNCItems.MAGNETITE_CHUNK),
-
-            POOR_CASSITERITE_ORE = registerTieredOre("cassiterite", OreTier.POOR, CNCItems.CASSITERITE_CHUNK),
-            CASSITERITE_ORE = registerTieredOre("cassiterite", OreTier.NORMAL, CNCItems.CASSITERITE_CHUNK),
-            RICH_CASSITERITE_ORE = registerTieredOre("cassiterite", OreTier.RICH, CNCItems.CASSITERITE_CHUNK);
+    public static Map<OreTier, BlockEntry<Block>> registerOreFamily(String baseName, Supplier<? extends Item> drop) {
+        Map<OreTier, BlockEntry<Block>> map = new EnumMap<>(OreTier.class);
+        for (OreTier tier : OreTier.values()) {
+            map.put(tier, registerTieredOre(baseName, tier, drop));
+        }
+        return map;
+    }
 
     public static BlockEntry<Block> registerTieredOre(
             String baseName,
