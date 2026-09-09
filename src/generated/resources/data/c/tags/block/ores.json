@@ -1,0 +1,13 @@
+{
+  "values": [
+    "casting_n_crucibles:poor_hematite_ore",
+    "casting_n_crucibles:hematite_ore",
+    "casting_n_crucibles:rich_hematite_ore",
+    "casting_n_crucibles:poor_magnetite_ore",
+    "casting_n_crucibles:magnetite_ore",
+    "casting_n_crucibles:rich_magnetite_ore",
+    "casting_n_crucibles:poor_cassiterite_ore",
+    "casting_n_crucibles:cassiterite_ore",
+    "casting_n_crucibles:rich_cassiterite_ore"
+  ]
+}

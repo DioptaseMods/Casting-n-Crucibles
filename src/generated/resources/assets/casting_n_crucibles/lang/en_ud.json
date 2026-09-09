@@ -1,8 +1,23 @@
 {
   "block.casting_n_crucibles.carbon_bricks": "sʞɔıɹᗺ uoqɹɐƆ",
+  "block.casting_n_crucibles.cassiterite_ore": "ǝɹO ǝʇıɹǝʇıssɐƆ",
   "block.casting_n_crucibles.fire_bricks": "sʞɔıɹᗺ ǝɹıℲ",
+  "block.casting_n_crucibles.hematite_ore": "ǝɹO ǝʇıʇɐɯǝH",
+  "block.casting_n_crucibles.magnetite_ore": "ǝɹO ǝʇıʇǝubɐW",
+  "block.casting_n_crucibles.poor_cassiterite_ore": "ǝɹO ǝʇıɹǝʇıssɐƆ ɹooԀ",
+  "block.casting_n_crucibles.poor_hematite_ore": "ǝɹO ǝʇıʇɐɯǝH ɹooԀ",
+  "block.casting_n_crucibles.poor_magnetite_ore": "ǝɹO ǝʇıʇǝubɐW ɹooԀ",
+  "block.casting_n_crucibles.refractory_bricks": "sʞɔıɹᗺ ʎɹoʇɔɐɹɟǝᴚ",
+  "block.casting_n_crucibles.rich_cassiterite_ore": "ǝɹO ǝʇıɹǝʇıssɐƆ ɥɔıᴚ",
+  "block.casting_n_crucibles.rich_hematite_ore": "ǝɹO ǝʇıʇɐɯǝH ɥɔıᴚ",
+  "block.casting_n_crucibles.rich_magnetite_ore": "ǝɹO ǝʇıʇǝubɐW ɥɔıᴚ",
   "block.casting_n_crucibles.steel_casing": "buısɐƆ ןǝǝʇS",
+  "creativetab.casting_n_crucibles.main_tab": "sǝןqıɔnɹƆ ,N, buıʇsɐƆ",
   "item.casting_n_crucibles.carbon_brick": "ʞɔıɹᗺ uoqɹɐƆ",
+  "item.casting_n_crucibles.cassiterite_chunk": "ʞunɥƆ ǝʇıɹǝʇıssɐƆ",
   "item.casting_n_crucibles.fire_brick": "ʞɔıɹᗺ ǝɹıℲ",
+  "item.casting_n_crucibles.hematite_chunk": "ʞunɥƆ ǝʇıʇɐɯǝH",
+  "item.casting_n_crucibles.magnetite_chunk": "ʞunɥƆ ǝʇıʇǝubɐW",
+  "item.casting_n_crucibles.pig_iron_ingot": "ʇobuI uoɹI bıԀ",
   "item.casting_n_crucibles.steel_ingot": "ʇobuI ןǝǝʇS"
 }

@@ -1,8 +1,23 @@
 {
   "block.casting_n_crucibles.carbon_bricks": "Carbon Bricks",
+  "block.casting_n_crucibles.cassiterite_ore": "Cassiterite Ore",
   "block.casting_n_crucibles.fire_bricks": "Fire Bricks",
+  "block.casting_n_crucibles.hematite_ore": "Hematite Ore",
+  "block.casting_n_crucibles.magnetite_ore": "Magnetite Ore",
+  "block.casting_n_crucibles.poor_cassiterite_ore": "Poor Cassiterite Ore",
+  "block.casting_n_crucibles.poor_hematite_ore": "Poor Hematite Ore",
+  "block.casting_n_crucibles.poor_magnetite_ore": "Poor Magnetite Ore",
+  "block.casting_n_crucibles.refractory_bricks": "Refractory Bricks",
+  "block.casting_n_crucibles.rich_cassiterite_ore": "Rich Cassiterite Ore",
+  "block.casting_n_crucibles.rich_hematite_ore": "Rich Hematite Ore",
+  "block.casting_n_crucibles.rich_magnetite_ore": "Rich Magnetite Ore",
   "block.casting_n_crucibles.steel_casing": "Steel Casing",
+  "creativetab.casting_n_crucibles.main_tab": "Casting 'N' Crucibles",
   "item.casting_n_crucibles.carbon_brick": "Carbon Brick",
+  "item.casting_n_crucibles.cassiterite_chunk": "Cassiterite Chunk",
   "item.casting_n_crucibles.fire_brick": "Fire Brick",
+  "item.casting_n_crucibles.hematite_chunk": "Hematite Chunk",
+  "item.casting_n_crucibles.magnetite_chunk": "Magnetite Chunk",
+  "item.casting_n_crucibles.pig_iron_ingot": "Pig Iron Ingot",
   "item.casting_n_crucibles.steel_ingot": "Steel Ingot"
 }
