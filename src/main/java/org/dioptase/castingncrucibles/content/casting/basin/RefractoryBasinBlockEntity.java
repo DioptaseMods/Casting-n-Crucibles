@@ -29,7 +29,7 @@ import java.util.Objects;
 
 import static com.simibubi.create.content.fluids.tank.FluidTankBlockEntity.getCapacityMultiplier;
 
-public class CastingBasinBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid, IMultiBlockEntityContainer.Inventory {
+public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid, IMultiBlockEntityContainer.Inventory {
     private static final int MAX_SIZE = 5;
     private static final int DEFAULT_CAPACITY_MULTIPLIER = 8000;
     private static final int SLOTS_PER_BLOCK = 3;
@@ -55,7 +55,7 @@ public class CastingBasinBlockEntity extends SmartBlockEntity implements IHaveGo
     // For rendering purposes only
     private LerpedFloat fluidLevel;
 
-    public CastingBasinBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public RefractoryBasinBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         tankInventory = createInventory();
         inventory = new ItemStackHandler(SLOTS_PER_BLOCK) {
@@ -103,7 +103,7 @@ public class CastingBasinBlockEntity extends SmartBlockEntity implements IHaveGo
             for (int xOffset = 0; xOffset < width; xOffset++) {
                 for (int zOffset = 0; zOffset < width; zOffset++) {
                     BlockPos pos = this.worldPosition.offset(xOffset, yOffset, zOffset);
-                    CastingBasinBlockEntity basinAt = ConnectivityHandler.partAt(getType(), level, pos);
+                    RefractoryBasinBlockEntity basinAt = ConnectivityHandler.partAt(getType(), level, pos);
                     if (basinAt == null)
                         continue;
                     level.updateNeighbourForOutputSignal(pos, basinAt.getBlockState().getBlock());
@@ -133,12 +133,12 @@ public class CastingBasinBlockEntity extends SmartBlockEntity implements IHaveGo
     }
 
     @Override
-    public CastingBasinBlockEntity getControllerBE() {
+    public RefractoryBasinBlockEntity getControllerBE() {
         if (isController() || !hasLevel())
             return this;
         BlockEntity blockEntity = level.getBlockEntity(controller);
-        if (blockEntity instanceof CastingBasinBlockEntity)
-            return (CastingBasinBlockEntity) blockEntity;
+        if (blockEntity instanceof RefractoryBasinBlockEntity)
+            return (RefractoryBasinBlockEntity) blockEntity;
         return null;
     }
 
@@ -173,9 +173,9 @@ public class CastingBasinBlockEntity extends SmartBlockEntity implements IHaveGo
         onFluidStackChanged(tankInventory.getFluid());
 
         BlockState state = getBlockState();
-        if (CastingBasinBlock.isCastingBasin(state)) {
-            state = state.setValue(CastingBasinBlock.BOTTOM, true);
-            state = state.setValue(CastingBasinBlock.TOP, true);
+        if (RefractoryBasinBlock.isRefractoryBasin(state)) {
+            state = state.setValue(RefractoryBasinBlock.BOTTOM, true);
+            state = state.setValue(RefractoryBasinBlock.TOP, true);
             getLevel().setBlock(worldPosition, state, Block.UPDATE_CLIENTS | Block.UPDATE_INVISIBLE | Block.UPDATE_KNOWN_SHAPE);
         }
 
@@ -205,9 +205,9 @@ public class CastingBasinBlockEntity extends SmartBlockEntity implements IHaveGo
     @Override
     public void notifyMultiUpdated() {
         BlockState state = this.getBlockState();
-        if (CastingBasinBlock.isCastingBasin(state)) {
-            state = state.setValue(CastingBasinBlock.BOTTOM, getController().getY() == getBlockPos().getY());
-            state = state.setValue(CastingBasinBlock.TOP, getController().getY() + height - 1 == getBlockPos().getY());
+        if (RefractoryBasinBlock.isRefractoryBasin(state)) {
+            state = state.setValue(RefractoryBasinBlock.BOTTOM, getController().getY() == getBlockPos().getY());
+            state = state.setValue(RefractoryBasinBlock.TOP, getController().getY() + height - 1 == getBlockPos().getY());
             level.setBlock(getBlockPos(), state, Block.UPDATE_CLIENTS | Block.UPDATE_INVISIBLE);
         }
         onFluidStackChanged(tankInventory.getFluid());
