@@ -28,6 +28,7 @@ public class CastingNCrucibles {
 
         NeoForge.EVENT_BUS.register(this);
         CNCCreativeTabs.register(modEventBus);
+        CNCDataComponents.register(modEventBus);
         modEventBus.addListener(CNCCreativeTabs::addCreative);
 
         CNCPartialModels.init();

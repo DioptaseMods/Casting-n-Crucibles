@@ -22,6 +22,7 @@ public class CNCCreativeTabs {
                     .icon(() -> CNCItems.STEEL_INGOT.asItem().getDefaultInstance())
                     .title(Component.translatable("creativetab.casting_n_crucibles.main_tab"))
                     .build());
+
 //    Need to set up the addCreative method for this
 //    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ORES_TAB = CREATIVE_MODE_TAB.register("ores_tab",
 //            () -> CreativeModeTab.builder()
