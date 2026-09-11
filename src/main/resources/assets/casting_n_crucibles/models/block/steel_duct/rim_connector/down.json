@@ -1,0 +1,23 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "casting_n_crucibles:block/steel_gas_duct",
+		"particle": "casting_n_crucibles:block/steel_casing"
+	},
+	"elements": [
+		{
+			"name": "connection_down",
+			"from": [3, 0, 3],
+			"to": [13, 3, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15, 0, -17]},
+			"faces": {
+				"north": {"uv": [0, 14.5, 5, 16], "texture": "#0"},
+				"east": {"uv": [0, 14.5, 5, 16], "texture": "#0"},
+				"south": {"uv": [5, 14.5, 0, 16], "texture": "#0"},
+				"west": {"uv": [5, 14.5, 0, 16], "texture": "#0"}
+			}
+		}
+	]
+}

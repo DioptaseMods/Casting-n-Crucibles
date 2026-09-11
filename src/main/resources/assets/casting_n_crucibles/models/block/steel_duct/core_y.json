@@ -1,0 +1,20 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "casting_n_crucibles:block/steel_gas_duct_connected",
+		"particle": "casting_n_crucibles:block/steel_casing"
+	},
+	"elements": [
+		{
+			"name": "core_y",
+			"from": [3, 3, 3],
+			"to": [13, 13, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-1, -1, -1]},
+			"faces": {
+				"up": {"uv": [12, 12, 16, 8], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [12, 8, 16, 12], "rotation": 180, "texture": "#0"}
+			}
+		}
+	]
+}

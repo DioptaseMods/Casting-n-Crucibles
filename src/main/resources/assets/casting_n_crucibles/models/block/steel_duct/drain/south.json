@@ -1,0 +1,37 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "casting_n_crucibles:block/steel_gas_duct",
+		"particle": "casting_n_crucibles:block/steel_casing"
+	},
+	"elements": [
+		{
+			"from": [1, 1, 14],
+			"to": [15, 15, 17],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"east": {"uv": [8.5, 0, 7, 7], "texture": "#0"},
+				"south": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"west": {"uv": [7, 0, 8.5, 7], "texture": "#0"},
+				"up": {"uv": [8.5, 0, 7, 7], "rotation": 270, "texture": "#0"},
+				"down": {"uv": [8.5, 0, 7, 7], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"from": [4, 4, 17],
+			"to": [12, 12, 20],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [12, 12, 16, 16], "texture": "#0"},
+				"east": {"uv": [12, 12, 16, 10.5], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [12, 12, 16, 16], "texture": "#0"},
+				"west": {"uv": [12, 10.5, 16, 12], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [12, 12, 16, 10.5], "texture": "#0"},
+				"down": {"uv": [12, 12, 16, 10.5], "rotation": 180, "texture": "#0"}
+			}
+		}
+	]
+}
