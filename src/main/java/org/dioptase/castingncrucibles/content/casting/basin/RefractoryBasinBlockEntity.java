@@ -348,4 +348,8 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 
     }
+
+    public LerpedFloat getFluidLevel() {
+        return fluidLevel;
+    }
 }

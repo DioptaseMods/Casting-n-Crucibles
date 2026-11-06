@@ -1,14 +1,11 @@
 package org.dioptase.castingncrucibles.registry;
 
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -20,6 +17,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.neoforged.neoforge.common.Tags;
+import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinBlock;
 import org.dioptase.castingncrucibles.foundation.data.recipe.OreTier;
 
 import java.util.EnumMap;
@@ -62,6 +60,13 @@ public class CNCBlocks {
             .transform(pickaxeOnly())
             .onRegister(connectedTextures(() -> new EncasedCTBehaviour(CNCPartialModels.STEEL_CASING)))
             .onRegister(casingConnectivity((block, cc) -> cc.makeCasing(block, CNCPartialModels.STEEL_CASING)))
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<RefractoryBasinBlock> REFRACTORY_BASIN = REGISTRATE.block("refractory_basin", RefractoryBasinBlock::new)
+            .initialProperties(SharedProperties::stone)
+            .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY))
+            .transform(pickaxeOnly())
             .simpleItem()
             .register();
 

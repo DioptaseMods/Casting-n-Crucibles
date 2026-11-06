@@ -14,10 +14,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(CastingNCrucibles.MOD_ID)
 public class CastingNCrucibles {
-    // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "casting_n_crucibles";
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -33,6 +31,7 @@ public class CastingNCrucibles {
 
         CNCPartialModels.init();
         CNCBlocks.init();
+        CNCBlockEntities.init();
         CNCItems.init();
         CNCTags.init();
 
