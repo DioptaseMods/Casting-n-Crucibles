@@ -20,7 +20,7 @@ public class CNCPartialModels {
                 ResourceLocation.fromNamespaceAndPath(CastingNCrucibles.MOD_ID, "block/" + connectedTextureName + "_connected"));
     }
 
-    private static CTSpriteShiftEntry getCT(CTType type, String blockTextureName) {
+    protected static CTSpriteShiftEntry getCT(CTType type, String blockTextureName) {
         return getCT(type, blockTextureName, blockTextureName);
     }
 
