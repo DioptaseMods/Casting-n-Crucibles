@@ -29,6 +29,8 @@ public class RefractoryBasinCTBehaviour extends ConnectedTextureBehaviour.Base {
 
     @Override
     public boolean connectsTo(BlockState state, BlockState other, BlockAndTintGetter reader, BlockPos pos, BlockPos otherPos, Direction face) {
+        if (face.getAxis().isVertical() && otherPos.getY() != pos.getY())
+            return false;
         return state.getBlock() == other.getBlock() && ConnectivityHandler.isConnected(reader, pos, otherPos);
     }
 }

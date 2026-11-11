@@ -70,7 +70,9 @@ public class CNCBlocks {
 
     public static final BlockEntry<RefractoryBasinBlock> REFRACTORY_BASIN = REGISTRATE.block("refractory_basin", RefractoryBasinBlock::new)
             .initialProperties(SharedProperties::stone)
-            .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY))
+            .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY)
+                    .noOcclusion()
+                    .forceSolidOn())
             .transform(pickaxeOnly())
             .blockstate(new RefractoryBasinGenerator()::generate)
             .onRegister(CreateRegistrate.blockModel(() -> RefractoryBasinModel::new))

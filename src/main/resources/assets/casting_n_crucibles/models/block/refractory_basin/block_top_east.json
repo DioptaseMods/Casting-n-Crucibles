@@ -10,81 +10,29 @@
 	"elements": [
 		{
 			"name": "SideRight",
-			"from": [
-				14,
-				0,
-				0
-			],
-			"to": [
-				16,
-				16,
-				16
-			],
-			"rotation": {
-				"angle": 0,
-				"axis": "y",
-				"origin": [
-					8,
-					12,
-					8
-				]
-			},
+			"from": [14, 0, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 8]},
 			"faces": {
-				"east": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#0",
-					"cullface": "east"
-				},
-				"west": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#0"
-				},
-				"up": {
-					"uv": [
-						0,
-						0,
-						16,
-						2
-					],
-					"rotation": 90,
-					"texture": "#1"
-				}
+				"east": {"uv": [0, 0, 16, 16], "texture": "#0", "cullface": "east"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [14, 0, 16, 16], "texture": "#1"}
 			}
 		}
 	],
 	"groups": [
 		{
 			"name": "block_bottom",
-			"origin": [
-				8,
-				8,
-				8
-			],
+			"origin": [8, 8, 8],
 			"scope": 0,
 			"color": 0,
 			"children": [
 				{
 					"name": "tank",
-					"origin": [
-						8,
-						8,
-						-23
-					],
+					"origin": [8, 8, -23],
 					"scope": 0,
 					"color": 0,
-					"children": [
-						0
-					]
+					"children": [0]
 				}
 			]
 		}

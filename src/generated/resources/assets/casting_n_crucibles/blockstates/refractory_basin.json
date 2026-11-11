@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "bottom=false,shape=east,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=east,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_east"
+    },
+    "bottom=false,shape=inner,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=inner,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=ne,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=ne,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_ne"
+    },
+    "bottom=false,shape=north,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=north,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_north"
+    },
+    "bottom=false,shape=nw,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=nw,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_nw"
+    },
+    "bottom=false,shape=plain,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=plain,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top"
+    },
+    "bottom=false,shape=se,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=se,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_se"
+    },
+    "bottom=false,shape=south,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=south,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_south"
+    },
+    "bottom=false,shape=sw,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=sw,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_sw"
+    },
+    "bottom=false,shape=west,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_middle"
+    },
+    "bottom=false,shape=west,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_top_west"
+    },
+    "bottom=true,shape=east,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=east,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_east"
+    },
+    "bottom=true,shape=inner,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=inner,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=ne,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=ne,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_ne"
+    },
+    "bottom=true,shape=north,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=north,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_north"
+    },
+    "bottom=true,shape=nw,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=nw,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_nw"
+    },
+    "bottom=true,shape=plain,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=plain,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single"
+    },
+    "bottom=true,shape=se,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=se,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_se"
+    },
+    "bottom=true,shape=south,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=south,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_south"
+    },
+    "bottom=true,shape=sw,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=sw,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_sw"
+    },
+    "bottom=true,shape=west,top=false": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_bottom"
+    },
+    "bottom=true,shape=west,top=true": {
+      "model": "casting_n_crucibles:block/refractory_basin/block_single_west"
+    }
+  }
+}
