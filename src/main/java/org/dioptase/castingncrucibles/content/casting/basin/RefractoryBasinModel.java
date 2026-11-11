@@ -20,7 +20,7 @@ public class RefractoryBasinModel extends CTModel {
     //CrucibleModel.java from Create-Metallurgy was followed for this model!
     protected static final ModelProperty<CullData> CULL_PROPERTY = new ModelProperty<>();
     public RefractoryBasinModel(BakedModel originalModel) {
-        super(originalModel, new RefractoryBasinCTBehaviour(CNCSpriteShifts.REFRACTORY_BASIN, CNCSpriteShifts.REFRACTORY_BASIN_BOTTOM, CNCSpriteShifts.REFRACTORY_BASIN_INNER));
+        super(originalModel, new RefractoryBasinCTBehaviour(CNCSpriteShifts.REFRACTORY_BASIN, CNCSpriteShifts.REFRACTORY_BASIN_BOTTOM));
     }
 
     @Override

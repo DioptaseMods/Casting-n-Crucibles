@@ -11,22 +11,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class RefractoryBasinCTBehaviour extends ConnectedTextureBehaviour.Base {
-    protected CTSpriteShiftEntry topShift;
-    protected CTSpriteShiftEntry innerShift;
+    protected CTSpriteShiftEntry bottomShift;
     protected CTSpriteShiftEntry layerShift;
 
-    public RefractoryBasinCTBehaviour(CTSpriteShiftEntry layerShift, CTSpriteShiftEntry bottomShift, CTSpriteShiftEntry innerShift) {
+    public RefractoryBasinCTBehaviour(CTSpriteShiftEntry layerShift, CTSpriteShiftEntry bottomShift) {
         this.layerShift = layerShift;
-        this.topShift = bottomShift;
-        this.innerShift = innerShift;
+        this.bottomShift = bottomShift;
     }
 
     @Override
     public @Nullable CTSpriteShiftEntry getShift(BlockState state, Direction direction, @Nullable TextureAtlasSprite sprite) {
-        if (sprite != null && direction.getAxis() == Direction.Axis.Y && innerShift.getOriginal() == sprite) {
-            return innerShift;
+        if (sprite != null && direction.getAxis() == Direction.Axis.Y && bottomShift.getOriginal() == sprite) {
+            return bottomShift;
         }
-        return direction.getAxis().isHorizontal() ? layerShift : topShift;
+        return direction.getAxis().isHorizontal() ? layerShift : bottomShift;
     }
 
     @Override

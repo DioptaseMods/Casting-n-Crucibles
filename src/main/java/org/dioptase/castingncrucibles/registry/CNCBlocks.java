@@ -2,6 +2,8 @@ package org.dioptase.castingncrucibles.registry;
 
 import com.simibubi.create.content.decoration.encasing.CasingBlock;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
+import com.simibubi.create.foundation.data.AssetLookup;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.core.HolderLookup;
@@ -18,6 +20,9 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.neoforged.neoforge.common.Tags;
 import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinBlock;
+import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinBlockItem;
+import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinGenerator;
+import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinModel;
 import org.dioptase.castingncrucibles.foundation.data.recipe.OreTier;
 
 import java.util.EnumMap;
@@ -67,7 +72,12 @@ public class CNCBlocks {
             .initialProperties(SharedProperties::stone)
             .properties(p -> p.mapColor(MapColor.TERRACOTTA_GRAY))
             .transform(pickaxeOnly())
-            .simpleItem()
+            .blockstate(new RefractoryBasinGenerator()::generate)
+            .onRegister(CreateRegistrate.blockModel(() -> RefractoryBasinModel::new))
+            .item(RefractoryBasinBlockItem::new)
+            .properties(Item.Properties::fireResistant)
+            .model(AssetLookup.customBlockItemModel("_", "block_single"))
+            .build()
             .register();
 
     // ORES

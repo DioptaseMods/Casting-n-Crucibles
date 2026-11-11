@@ -18,11 +18,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.dioptase.castingncrucibles.registry.CNCBlockEntities;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +33,7 @@ import java.util.Objects;
 import static com.simibubi.create.content.fluids.tank.FluidTankBlockEntity.getCapacityMultiplier;
 
 public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid, IMultiBlockEntityContainer.Inventory {
-    private static final int MAX_SIZE = 5;
+    private static final int MAX_SIZE = 4;
     private static final int DEFAULT_CAPACITY_MULTIPLIER = 8000;
     private static final int SLOTS_PER_BLOCK = 3;
 
@@ -73,9 +76,66 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         refreshCapabilities();
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (syncCooldown > 0) {
+            syncCooldown--;
+            if (syncCooldown == 0 && queuedSync)
+                sendData();
+        }
+
+        if (lastKnownPos == null)
+            lastKnownPos = getBlockPos();
+        else if (!lastKnownPos.equals(worldPosition) && worldPosition != null) {
+            onPositionChanged();
+            return;
+        }
+
+        if (updateCapability) {
+            updateCapability = false;
+            refreshCapability();
+        }
+        if (updateConnectivity)
+            updateConnectivity();
+        if (fluidLevel != null)
+            fluidLevel.tickChaser();
+    }
+
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
+                (be, side) -> {
+                    if (be.fluidCapability == null)
+                        be.refreshCapability();
+                    return be.fluidCapability;
+                }
+        );
+//        event.registerBlockEntity(
+//                Capabilities.ItemHandler.BLOCK,
+//                CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
+//                (be, side) -> {
+//                    if (be.itemCapability == null)
+//                        be.refreshCapability();
+//                    return be.itemCapability;
+//                }
+//        )
+    }
+
+    private void onPositionChanged() {
+        removeController(true);
+        lastKnownPos = worldPosition;
+    }
+
+    private void refreshCapability() {
+        fluidCapability = handlerForFluidCapability();
+        invalidateCapabilities();
+    }
+
     private void refreshCapabilities() {
         fluidCapability = handlerForFluidCapability();
-        itemCapability = null;
+        itemCapability = this::getInventoryOfBlock;
         invalidateCapabilities();
     }
 
@@ -176,6 +236,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         if (RefractoryBasinBlock.isRefractoryBasin(state)) {
             state = state.setValue(RefractoryBasinBlock.BOTTOM, true);
             state = state.setValue(RefractoryBasinBlock.TOP, true);
+            state = state.setValue(RefractoryBasinBlock.SHAPE, RefractoryBasinBlock.Shape.PLAIN);
             getLevel().setBlock(worldPosition, state, Block.UPDATE_CLIENTS | Block.UPDATE_INVISIBLE | Block.UPDATE_KNOWN_SHAPE);
         }
 
@@ -199,15 +260,18 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
 
     @Override
     public void preventConnectivityUpdate() {
-
+        updateConnectivity = false;
     }
 
     @Override
     public void notifyMultiUpdated() {
         BlockState state = this.getBlockState();
         if (RefractoryBasinBlock.isRefractoryBasin(state)) {
+            RefractoryBasinBlock.Shape newShape = getShape();
+
             state = state.setValue(RefractoryBasinBlock.BOTTOM, getController().getY() == getBlockPos().getY());
             state = state.setValue(RefractoryBasinBlock.TOP, getController().getY() + height - 1 == getBlockPos().getY());
+            state = state.setValue(RefractoryBasinBlock.SHAPE, newShape);
             level.setBlock(getBlockPos(), state, Block.UPDATE_CLIENTS | Block.UPDATE_INVISIBLE);
         }
         onFluidStackChanged(tankInventory.getFluid());
@@ -217,12 +281,12 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
 
     @Override
     public Direction.Axis getMainConnectionAxis() {
-        return null;
+        return Direction.Axis.Y;
     }
 
     @Override
     public int getMaxLength(Direction.Axis longAxis, int width) {
-        return 0;
+        return 4;
     }
 
     @Override
@@ -351,5 +415,59 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
 
     public LerpedFloat getFluidLevel() {
         return fluidLevel;
+    }
+
+    private RefractoryBasinBlock.Shape getShape() {
+        RefractoryBasinBlock.Shape shape = RefractoryBasinBlock.Shape.PLAIN;
+        RefractoryBasinBlockEntity controller = getControllerBE();
+
+        if (controller == null)
+            return shape;
+
+        int xOffset = getBlockPos().getX() - controller.getBlockPos().getX();
+        int zOffset = getBlockPos().getZ() - controller.getBlockPos().getZ();
+
+        if (width != 1) {
+            if (xOffset == 0) {
+                if (zOffset == 0)
+                    return RefractoryBasinBlock.Shape.NW;
+                else if (zOffset == (width - 1))
+                    return RefractoryBasinBlock.Shape.SW;
+                else
+                    return RefractoryBasinBlock.Shape.WEST;
+
+
+            } else if (xOffset == (width - 1)) {
+                if (zOffset == 0)
+                    return RefractoryBasinBlock.Shape.NE;
+                else if (zOffset == (width - 1))
+                    return RefractoryBasinBlock.Shape.SE;
+                else
+                    return RefractoryBasinBlock.Shape.EAST;
+
+            } else if (zOffset == 0)
+                return RefractoryBasinBlock.Shape.NORTH;
+            else if (zOffset == (width - 1))
+                return RefractoryBasinBlock.Shape.SOUTH;
+            else
+                return RefractoryBasinBlock.Shape.INNER;
+        }
+        return shape;
+    }
+
+    public void updateConnectivity() {
+        updateConnectivity = false;
+        if (level.isClientSide)
+            return;
+        if (!isController())
+            return;
+        ConnectivityHandler.formMulti(this);
+    }
+
+    public void sendDataImmediately() {
+        //sendData() Might need to be modified to be more similar to the @FluidTankBlockEntity.java sendData().
+        syncCooldown = 0;
+        queuedSync = false;
+        sendData();
     }
 }
