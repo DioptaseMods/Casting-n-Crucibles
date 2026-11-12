@@ -1,4 +1,4 @@
-package org.dioptase.castingncrucibles.content.casting.basin;
+package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;

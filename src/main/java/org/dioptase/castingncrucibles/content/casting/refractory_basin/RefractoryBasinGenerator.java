@@ -1,4 +1,4 @@
-package org.dioptase.castingncrucibles.content.casting.basin;
+package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 
 import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.SpecialBlockStateGen;

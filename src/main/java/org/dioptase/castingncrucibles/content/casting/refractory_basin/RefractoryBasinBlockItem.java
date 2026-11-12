@@ -1,4 +1,4 @@
-package org.dioptase.castingncrucibles.content.casting.basin;
+package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;

@@ -1,8 +1,7 @@
-package org.dioptase.castingncrucibles.content.casting.basin;
+package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.foundation.block.connected.CTModel;
-import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;

@@ -1,4 +1,4 @@
-package org.dioptase.castingncrucibles.content.casting.basin;
+package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,6 +25,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.dioptase.castingncrucibles.registry.CNCBlockEntities;
 
@@ -38,7 +40,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
     private static final int SLOTS_PER_BLOCK = 3;
 
     protected IFluidHandler fluidCapability;
-    protected ICapabilityProvider<IItemHandler> itemCapability;
+    protected IItemHandlerModifiable itemCapability;
     protected SmartFluidTank tankInventory;
     protected ItemStackHandler inventory;
 
@@ -110,8 +112,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
                     if (be.fluidCapability == null)
                         be.refreshCapability();
                     return be.fluidCapability;
-                }
-        );
+                });
 //        event.registerBlockEntity(
 //                Capabilities.ItemHandler.BLOCK,
 //                CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
@@ -119,8 +120,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
 //                    if (be.itemCapability == null)
 //                        be.refreshCapability();
 //                    return be.itemCapability;
-//                }
-//        )
+//                });
     }
 
     private void onPositionChanged() {
@@ -128,14 +128,16 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         lastKnownPos = worldPosition;
     }
 
+    //I don't remember making two of these. Should be condensed into one method...
     private void refreshCapability() {
         fluidCapability = handlerForFluidCapability();
+        // itemCapability =
         invalidateCapabilities();
     }
 
     private void refreshCapabilities() {
         fluidCapability = handlerForFluidCapability();
-        itemCapability = this::getInventoryOfBlock;
+        // itemCapability = this::getInventoryOfBlock;
         invalidateCapabilities();
     }
 
@@ -185,6 +187,15 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
 
     public float getFillState() {
         return (float) tankInventory.getFluidAmount() / tankInventory.getCapacity();
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        RefractoryBasinBlockEntity controllerBE = getControllerBE();
+        if (controllerBE == null)
+            return false;
+        return containedFluidTooltip(tooltip, isPlayerSneaking,
+                level.getCapability(Capabilities.FluidHandler.BLOCK, controllerBE.getBlockPos(), null));
     }
 
     @Override

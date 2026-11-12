@@ -1,8 +1,8 @@
 package org.dioptase.castingncrucibles.registry;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
-import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinBlockEntity;
-import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinRenderer;
+import org.dioptase.castingncrucibles.content.casting.refractory_basin.RefractoryBasinBlockEntity;
+import org.dioptase.castingncrucibles.content.casting.refractory_basin.RefractoryBasinRenderer;
 
 import static org.dioptase.castingncrucibles.CastingNCrucibles.REGISTRATE;
 

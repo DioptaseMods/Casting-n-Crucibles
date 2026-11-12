@@ -19,10 +19,10 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.neoforged.neoforge.common.Tags;
-import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinBlock;
-import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinBlockItem;
-import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinGenerator;
-import org.dioptase.castingncrucibles.content.casting.basin.RefractoryBasinModel;
+import org.dioptase.castingncrucibles.content.casting.refractory_basin.RefractoryBasinBlock;
+import org.dioptase.castingncrucibles.content.casting.refractory_basin.RefractoryBasinBlockItem;
+import org.dioptase.castingncrucibles.content.casting.refractory_basin.RefractoryBasinGenerator;
+import org.dioptase.castingncrucibles.content.casting.refractory_basin.RefractoryBasinModel;
 import org.dioptase.castingncrucibles.foundation.data.recipe.OreTier;
 
 import java.util.EnumMap;
