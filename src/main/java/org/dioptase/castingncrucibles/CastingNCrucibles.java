@@ -1,7 +1,9 @@
 package org.dioptase.castingncrucibles;
 
 import com.tterrag.registrate.providers.ProviderType;
+import net.minecraft.resources.ResourceLocation;
 import org.dioptase.castingncrucibles.registry.*;
+import org.jetbrains.annotations.Contract;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -34,6 +36,7 @@ public class CastingNCrucibles {
         CNCBlockEntities.init();
         CNCItems.init();
         CNCTags.init();
+        CNCFluids.init();
 
         REGISTRATE.addDataGenerator(ProviderType.LANG, prov -> {
             // UI & Tooltips
@@ -45,6 +48,13 @@ public class CastingNCrucibles {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+    }
+
+    @Contract("_ -> new")
+    public static ResourceLocation asResource(String path) {
+        return path.contains(":")
+                ? ResourceLocation.tryParse(path)
+                : ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

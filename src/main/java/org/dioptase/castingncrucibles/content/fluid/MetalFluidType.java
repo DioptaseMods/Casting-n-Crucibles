@@ -1,5 +1,6 @@
 package org.dioptase.castingncrucibles.content.fluid;
 
+import com.tterrag.registrate.builders.FluidBuilder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +31,10 @@ public class MetalFluidType extends FluidType {
         this.fogColor = fogColor;
         this.specificHeat = specificHeat;
         this.metalComposition = metalComposition;
+    }
+
+    public static FluidBuilder.FluidTypeFactory create(int tintColor, Vector3f fogColor, float specificHeat) {
+        return (properties, still, flow) -> new MetalFluidType(properties, still, flow,  tintColor, fogColor, specificHeat, Map.of());
     }
 
     public ResourceLocation getStillTexture() {

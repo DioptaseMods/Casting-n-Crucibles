@@ -1,0 +1,26 @@
+package org.dioptase.castingncrucibles.registry;
+
+import com.tterrag.registrate.util.entry.FluidEntry;
+import net.neoforged.neoforge.common.Tags;
+import org.dioptase.castingncrucibles.CastingNCrucibles;
+import org.dioptase.castingncrucibles.content.fluid.MetalFluid;
+import org.dioptase.castingncrucibles.content.fluid.MetalFluidType;
+import org.joml.Vector3f;
+
+import static org.dioptase.castingncrucibles.CastingNCrucibles.REGISTRATE;
+
+public class CNCFluids {
+    public static final FluidEntry<MetalFluid> MOLTEN_STEEL = REGISTRATE.metalFluid("molten_steel",
+            MetalFluidType.create(0xFF98A4A8, new Vector3f(0.97f, 0.55f, 0.25f), 0.501f))
+            .lang("Molten Steel")
+            .bucket()
+            .lang("Molten Steel Bucket")
+            .tag(Tags.Items.BUCKETS)
+            .build()
+            .properties(b -> b.temperature(1152).density(2100).viscosity(2500).lightLevel(15))
+            .register();
+
+    public static void init() {
+
+    }
+}
