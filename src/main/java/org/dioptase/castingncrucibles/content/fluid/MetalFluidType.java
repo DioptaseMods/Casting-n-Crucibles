@@ -27,14 +27,14 @@ public class MetalFluidType extends FluidType {
         super(properties);
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;
-        this.tintColor = tintColor;
+        this.tintColor = (tintColor & 0xFF000000) == 0 ? 0xFF000000 | tintColor : tintColor;
         this.fogColor = fogColor;
         this.specificHeat = specificHeat;
         this.metalComposition = metalComposition;
     }
 
-    public static FluidBuilder.FluidTypeFactory create(int tintColor, Vector3f fogColor, float specificHeat) {
-        return (properties, still, flow) -> new MetalFluidType(properties, still, flow,  tintColor, fogColor, specificHeat, Map.of());
+    public static FluidBuilder.FluidTypeFactory create(int tintColor, Vector3f fogColor, float specificHeat, Map<ResourceLocation, Float> metalComposition) {
+        return (properties, still, flow) -> new MetalFluidType(properties, still, flow,  tintColor, fogColor, specificHeat, metalComposition);
     }
 
     public ResourceLocation getStillTexture() {
