@@ -2,7 +2,7 @@ package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.foundation.ICapabilityProvider;
+import com.simibubi.create.api.packager.InventoryIdentifier;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -24,9 +24,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import org.dioptase.castingncrucibles.foundation.utility.CNCUtils;
 import org.dioptase.castingncrucibles.registry.CNCBlockEntities;
 
 import java.util.List;
@@ -40,9 +41,10 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
     private static final int SLOTS_PER_BLOCK = 3;
 
     protected IFluidHandler fluidCapability;
-    protected IItemHandlerModifiable itemCapability;
-    protected SmartFluidTank tankInventory;
+    protected IItemHandlerModifiable itemCapability = null;
     protected ItemStackHandler inventory;
+    protected InventoryIdentifier invId;
+    protected SmartFluidTank tankInventory;
 
     protected BlockPos controller;
     protected BlockPos lastKnownPos;
@@ -68,8 +70,10 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 setChanged();
+                sendData();
             }
         };
+
         forceFluidLevelUpdate = true;
         updateConnectivity = false;
         updateCapability = false;
@@ -96,7 +100,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
 
         if (updateCapability) {
             updateCapability = false;
-            refreshCapability();
+            refreshCapabilities();
         }
         if (updateConnectivity)
             updateConnectivity();
@@ -110,17 +114,19 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
                 CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
                 (be, side) -> {
                     if (be.fluidCapability == null)
-                        be.refreshCapability();
+                        be.refreshCapabilities();
                     return be.fluidCapability;
                 });
-//        event.registerBlockEntity(
-//                Capabilities.ItemHandler.BLOCK,
-//                CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
-//                (be, side) -> {
-//                    if (be.itemCapability == null)
-//                        be.refreshCapability();
-//                    return be.itemCapability;
-//                });
+
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
+                (be, context) -> {
+                    if (be.itemCapability == null)
+                        return null;
+                    return be.getItemCapability();
+                }
+        );
     }
 
     private void onPositionChanged() {
@@ -128,29 +134,18 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         lastKnownPos = worldPosition;
     }
 
-    //I don't remember making two of these. Should be condensed into one method...
-    private void refreshCapability() {
-        fluidCapability = handlerForFluidCapability();
-        // itemCapability =
-        invalidateCapabilities();
-    }
-
     private void refreshCapabilities() {
-        fluidCapability = handlerForFluidCapability();
-        // itemCapability = this::getInventoryOfBlock;
+        fluidCapability = getFluidCapability();
+        itemCapability = getItemCapability();
         invalidateCapabilities();
     }
 
-    public SmartFluidTank getTankInventory() {
-        return tankInventory;
+    private IFluidHandler getFluidCapability() {
+        return isController() ? tankInventory : ((getControllerBE() != null) ? getControllerBE().getFluidCapability() : new FluidTank(0));
     }
 
-    public ItemStackHandler getInventoryOfBlock() {
-        return inventory;
-    }
-
-    private IFluidHandler handlerForFluidCapability() {
-        return isController() ? tankInventory : ((getControllerBE() != null) ? getControllerBE().handlerForFluidCapability() : new FluidTank(0));
+    private IItemHandlerModifiable getItemCapability() {
+        return isController() ? inventory : getControllerBE() != null ? getControllerBE().getItemCapability() : itemCapability;
     }
 
     private SmartFluidTank createInventory() {
@@ -194,8 +189,10 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         RefractoryBasinBlockEntity controllerBE = getControllerBE();
         if (controllerBE == null)
             return false;
-        return containedFluidTooltip(tooltip, isPlayerSneaking,
+        containedFluidTooltip(tooltip, isPlayerSneaking,
                 level.getCapability(Capabilities.FluidHandler.BLOCK, controllerBE.getBlockPos(), null));
+        CNCUtils.createItemTooltip(tooltip, itemCapability);
+        return true;
     }
 
     @Override
@@ -347,8 +344,6 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         if (compound.contains("Controller"))
             controller = NBTHelper.readBlockPos(compound, "Controller");
 
-        inventory.deserializeNBT(registries, compound.getCompound("Inventory"));
-
         if (isController()) {
             width = compound.getInt("Size");
             height = compound.getInt("Height");
@@ -357,6 +352,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             tankInventory.readFromNBT(registries, compound.getCompound("TankContent"));
             if (tankInventory.getSpace() < 0)
                 tankInventory.drain(-tankInventory.getSpace(), IFluidHandler.FluidAction.EXECUTE);
+            inventory.deserializeNBT(registries, compound.getCompound("Inventory"));
         }
 
         if (compound.contains("ForceFluidLevel") || fluidLevel == null)
@@ -394,11 +390,10 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             compound.put("Controller", NbtUtils.writeBlockPos(controller));
         if (isController()) {
             compound.put("TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));
+            compound.put("Inventory", inventory.serializeNBT(registries));
             compound.putInt("Size", width);
             compound.putInt("Height", height);
         }
-
-        compound.put("Inventory", inventory.serializeNBT(registries));
 
         super.write(compound, registries, clientPacket);
 

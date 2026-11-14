@@ -32,7 +32,7 @@ public class RefractoryBasinRenderer extends SafeBlockEntityRenderer<RefractoryB
             return;
         float clampedLevel = Mth.clamp(level * totalHeight, 0, totalHeight);
 
-        FluidTank tank = be.getTankInventory();
+        FluidTank tank = be.tankInventory;
         FluidStack fluidStack = tank.getFluid();
 
         if (fluidStack.isEmpty())
