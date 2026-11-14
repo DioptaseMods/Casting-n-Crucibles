@@ -3,10 +3,13 @@ package org.dioptase.castingncrucibles.content.casting.refractory_basin;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.api.packager.InventoryIdentifier;
+import com.simibubi.create.foundation.ICapabilityProvider;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.inventory.VersionedInventoryWrapper;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import com.simibubi.create.foundation.utility.SameSizeCombinedInvWrapper;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
@@ -15,6 +18,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -24,21 +29,20 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.dioptase.castingncrucibles.foundation.utility.CNCUtils;
 import org.dioptase.castingncrucibles.registry.CNCBlockEntities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static com.simibubi.create.content.fluids.tank.FluidTankBlockEntity.getCapacityMultiplier;
 
 public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid, IMultiBlockEntityContainer.Inventory {
     private static final int MAX_SIZE = 4;
     private static final int DEFAULT_CAPACITY_MULTIPLIER = 8000;
-    private static final int SLOTS_PER_BLOCK = 3;
+    private static final int SLOTS_PER_BLOCK = 2;
 
     protected IFluidHandler fluidCapability;
     protected IItemHandlerModifiable itemCapability = null;
@@ -70,7 +74,8 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 setChanged();
-                sendData();
+                if (!level.isClientSide)
+                    sendData();
             }
         };
 
@@ -121,11 +126,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 CNCBlockEntities.REFRACTORY_BASIN_BE.get(),
-                (be, context) -> {
-                    if (be.itemCapability == null)
-                        return null;
-                    return be.getItemCapability();
-                }
+                (be, context) -> be.getItemCapability()
         );
     }
 
@@ -149,7 +150,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
     }
 
     private SmartFluidTank createInventory() {
-        return new SmartFluidTank(getCapacityMultiplier(), this::onFluidStackChanged);
+        return new SmartFluidTank(DEFAULT_CAPACITY_MULTIPLIER, this::onFluidStackChanged);
     }
 
     protected void onFluidStackChanged(FluidStack newFluidStack) {
@@ -191,7 +192,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             return false;
         containedFluidTooltip(tooltip, isPlayerSneaking,
                 level.getCapability(Capabilities.FluidHandler.BLOCK, controllerBE.getBlockPos(), null));
-        CNCUtils.createItemTooltip(tooltip, itemCapability);
+        CNCUtils.createItemTooltip(tooltip, controllerBE.getItemCapability());
         return true;
     }
 
@@ -233,8 +234,10 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         if (!hasLevel() || level.isClientSide)
             return;
         updateConnectivity = true;
-        if (!keepContents)
+        if (!keepContents) {
             applyFluidTankSize(1);
+            applyInventorySize(1);
+        }
         controller = null;
         width = 1;
         height = 1;
@@ -253,8 +256,36 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         sendData();
     }
 
+    private void applyInventorySize(int blocks) {
+        int newSize = blocks * SLOTS_PER_BLOCK;
+        if (inventory.getSlots() == newSize)
+            return;
+
+        List<ItemStack> currentItems = new ArrayList<ItemStack>();
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (!stack.isEmpty())
+                currentItems.add(stack);
+        }
+
+        inventory.setSize(newSize);
+
+        for (int i = 0; i < currentItems.size(); i++) {
+            ItemStack stack = currentItems.get(i);
+            if (i < newSize)
+                inventory.setStackInSlot(i, stack);
+            else if (hasLevel() && !level.isClientSide) {
+                Containers.dropItemStack(level,
+                        worldPosition.getX() + 0.5f,
+                        worldPosition.getY() + 0.5f,
+                        worldPosition.getZ() + 0.5f,
+                        stack);
+            }
+        }
+    }
+
     private void applyFluidTankSize(int blocks) {
-        tankInventory.setCapacity(blocks * getCapacityMultiplier());
+        tankInventory.setCapacity(blocks * DEFAULT_CAPACITY_MULTIPLIER);
         int overflow = tankInventory.getFluidAmount() - tankInventory.getCapacity();
         if (overflow > 0)
             tankInventory.drain(overflow, IFluidHandler.FluidAction.EXECUTE);
@@ -347,7 +378,8 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         if (isController()) {
             width = compound.getInt("Size");
             height = compound.getInt("Height");
-            tankInventory.setCapacity(getTotalTankSize() * getCapacityMultiplier());
+            tankInventory.setCapacity(getTotalTankSize() * DEFAULT_CAPACITY_MULTIPLIER);
+            applyInventorySize(getTotalTankSize());
 
             tankInventory.readFromNBT(registries, compound.getCompound("TankContent"));
             if (tankInventory.getSpace() < 0)
@@ -367,8 +399,10 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         if (changeOfController || prevSize != width || prevHeight != height) {
             if (hasLevel())
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 16);
-            if (isController())
-                tankInventory.setCapacity(getCapacityMultiplier() * getTotalTankSize());
+            if (isController()) {
+                tankInventory.setCapacity(DEFAULT_CAPACITY_MULTIPLIER * getTotalTankSize());
+                applyInventorySize(getTotalTankSize());
+            }
             invalidateRenderBoundingBox();
         }
 
@@ -468,6 +502,7 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         if (!isController())
             return;
         ConnectivityHandler.formMulti(this);
+        //applyInventorySize(getTotalTankSize());
     }
 
     public void sendDataImmediately() {

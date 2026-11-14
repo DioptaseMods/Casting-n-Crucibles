@@ -7,6 +7,7 @@ import com.simibubi.create.content.fluids.transfer.GenericItemEmptying;
 import com.simibubi.create.content.fluids.transfer.GenericItemFilling;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.fluid.FluidHelper;
+import com.simibubi.create.foundation.item.ItemHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -80,6 +81,7 @@ public class RefractoryBasinBlock extends Block implements IWrenchable, IBE<Refr
             BlockEntity be = level.getBlockEntity(pos);
             if (!(be instanceof RefractoryBasinBlockEntity RefBasinBE))
                 return;
+            ItemHelper.dropContents(level, pos, RefBasinBE.inventory);
             level.removeBlockEntity(pos);
             ConnectivityHandler.splitMulti(RefBasinBE);
         }
