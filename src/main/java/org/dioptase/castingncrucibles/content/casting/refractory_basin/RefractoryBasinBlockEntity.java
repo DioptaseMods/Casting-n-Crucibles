@@ -31,6 +31,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.dioptase.castingncrucibles.foundation.utility.CNCUtils;
 import org.dioptase.castingncrucibles.registry.CNCBlockEntities;
@@ -42,7 +43,7 @@ import java.util.Objects;
 public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid, IMultiBlockEntityContainer.Inventory {
     private static final int MAX_SIZE = 4;
     private static final int DEFAULT_CAPACITY_MULTIPLIER = 8000;
-    private static final int SLOTS_PER_BLOCK = 2;
+    protected static final int SLOTS_PER_BLOCK = 2;
 
     protected IFluidHandler fluidCapability;
     protected IItemHandlerModifiable itemCapability = null;
@@ -256,14 +257,57 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
         sendData();
     }
 
-    private void applyInventorySize(int blocks) {
+    private void centralizeInventories() {
+        if (level == null || level.isClientSide || !isController())
+            return;
+
+        applyInventorySize(getTotalTankSize());
+
+        for (int yOffset = 0; yOffset < height; yOffset++) {
+            for (int xOffset = 0; xOffset < width; xOffset++) {
+                for  (int zOffset = 0; zOffset < width; zOffset++) {
+                    BlockPos pos = this.worldPosition.offset(xOffset, yOffset, zOffset);
+
+                    if (pos.equals(this.worldPosition))
+                        continue;
+
+                    RefractoryBasinBlockEntity part = ConnectivityHandler.partAt(getType(), level, pos);
+                    if (part == null)
+                        continue;
+
+                    for (int slot = 0; slot < part.inventory.getSlots(); slot++) {
+                        ItemStack stack = part.inventory.getStackInSlot(slot).copy();
+                        if (stack.isEmpty())
+                            continue;
+
+                        ItemStack remainder = ItemHandlerHelper.insertItem(this.inventory, stack, false);
+
+                        part.inventory.setStackInSlot(slot, ItemStack.EMPTY);
+                        part.setChanged();
+
+                        if (!remainder.isEmpty()) {
+                            Containers.dropItemStack(level,
+                                    pos.getX() + 0.5,
+                                    pos.getY() + 0.5,
+                                    pos.getZ() + 0.5,
+                                    remainder);
+                        }
+                    }
+                }
+            }
+        }
+        setChanged();
+        sendData();
+    }
+
+    protected void applyInventorySize(int blocks) {
         int newSize = blocks * SLOTS_PER_BLOCK;
         if (inventory.getSlots() == newSize)
             return;
 
         List<ItemStack> currentItems = new ArrayList<ItemStack>();
         for (int i = 0; i < inventory.getSlots(); i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getStackInSlot(i).copy();
             if (!stack.isEmpty())
                 currentItems.add(stack);
         }
@@ -313,6 +357,8 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             state = state.setValue(RefractoryBasinBlock.SHAPE, newShape);
             level.setBlock(getBlockPos(), state, Block.UPDATE_CLIENTS | Block.UPDATE_INVISIBLE);
         }
+        if (isController())
+            centralizeInventories();
         onFluidStackChanged(tankInventory.getFluid());
         refreshCapabilities();
         setChanged();
@@ -501,8 +547,8 @@ public class RefractoryBasinBlockEntity extends SmartBlockEntity implements IHav
             return;
         if (!isController())
             return;
-        ConnectivityHandler.formMulti(this);
-        //applyInventorySize(getTotalTankSize());
+        CNCConnectivityHandler.formMulti(this);
+        applyInventorySize(getTotalTankSize());
     }
 
     public void sendDataImmediately() {

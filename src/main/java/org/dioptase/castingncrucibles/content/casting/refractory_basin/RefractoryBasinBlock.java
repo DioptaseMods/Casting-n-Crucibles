@@ -83,7 +83,7 @@ public class RefractoryBasinBlock extends Block implements IWrenchable, IBE<Refr
                 return;
             ItemHelper.dropContents(level, pos, RefBasinBE.inventory);
             level.removeBlockEntity(pos);
-            ConnectivityHandler.splitMulti(RefBasinBE);
+            CNCConnectivityHandler.splitMulti(RefBasinBE);
         }
     }
 
