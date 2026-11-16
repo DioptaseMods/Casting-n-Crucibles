@@ -4,15 +4,23 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.platform.NeoForgeCatnipServices;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class RefractoryBasinRenderer extends SafeBlockEntityRenderer<RefractoryBasinBlockEntity> {
+    private final BlockEntityRendererProvider.Context context;
+    private final float capHeight = 1 / 4f;
+    private final float tankHullWidth = 1 / 16f + 1 / 128f;
+    private final float minPuddleHeight = 1 / 16f;
 
-    public RefractoryBasinRenderer(BlockEntityRendererProvider.Context context) {}
+    public RefractoryBasinRenderer(BlockEntityRendererProvider.Context context) {
+        this.context = context;
+    }
     @Override
     protected void renderSafe(RefractoryBasinBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
         if (!be.isController())
@@ -22,9 +30,6 @@ public class RefractoryBasinRenderer extends SafeBlockEntityRenderer<RefractoryB
         if (fluidLevel == null)
             return;
 
-        float capHeight = 1 / 4f;
-        float tankHullWidth = 1 / 16f + 1 / 128f;
-        float minPuddleHeight = 1 / 16f;
         float totalHeight = be.getHeight() - 2 * capHeight - minPuddleHeight;
 
         float level = fluidLevel.getValue(partialTicks);
@@ -60,5 +65,13 @@ public class RefractoryBasinRenderer extends SafeBlockEntityRenderer<RefractoryB
         NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax, bufferSource,
                 ms, light, false, true);
         ms.popPose();
+    }
+
+    private void renderItems(RefractoryBasinBlockEntity basin, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
+        if (basin.getLevel() ==  null) return;
+        ItemRenderer itemRenderer = context.getItemRenderer();
+
+        ms.pushPose();
+        ms.translate(basin.width * 0.5f, 0, basin.width * 0.5f);
     }
 }
