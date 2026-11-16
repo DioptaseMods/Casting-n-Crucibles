@@ -18,6 +18,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -39,7 +41,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.dioptase.castingncrucibles.registry.CNCBlockEntities;
+import org.dioptase.castingncrucibles.registry.CNCBlocks;
 import org.dioptase.castingncrucibles.registry.CNCLang;
 import org.dioptase.castingncrucibles.registry.CNCShapes;
 
@@ -117,6 +121,47 @@ public class RefractoryBasinBlock extends Block implements IWrenchable, IBE<Refr
             case PLAIN -> CNCShapes.REF_BASIN_SINGLE;
             default -> Shapes.empty();
             };
+    }
+
+    @Override
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        super.entityInside(state, level, pos, entity);
+        tryInsertItem(level, pos, entity);
+    }
+
+    @Override
+    public void updateEntityAfterFallOn(BlockGetter level, Entity entity) {
+        super.updateEntityAfterFallOn(level, entity);
+        if (level instanceof Level lvl) {
+            BlockPos pos = entity.blockPosition();
+            if (!lvl.getBlockState(pos).is(this)) {
+                pos = pos.below();
+            }
+            if (lvl.getBlockState(pos).is(this)) {
+                tryInsertItem(lvl, pos, entity);
+            }
+        }
+    }
+
+    protected void tryInsertItem(Level level, BlockPos pos, Entity entity) {
+        if (level.isClientSide || !(entity instanceof ItemEntity itemEntity) || !itemEntity.isAlive())
+            return;
+
+        withBlockEntityDo(level, pos, be -> {
+            RefractoryBasinBlockEntity controller = be.getControllerBE();
+            if (controller == null)
+                return;
+
+            ItemStack original = itemEntity.getItem();
+
+            ItemStack remainder = ItemHandlerHelper.insertItem(controller.inventory, original.copy(), false);
+
+            if (remainder.isEmpty()) {
+                itemEntity.discard();
+            } else if (remainder.getCount() != original.getCount()) {
+                itemEntity.setItem(remainder);
+            }
+        });
     }
 
     @Override
